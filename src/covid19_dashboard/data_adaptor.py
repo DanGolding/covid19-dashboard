@@ -40,6 +40,10 @@ class DataAdaptor:
             ValueType.DEATHS: DataSets(*self._get_data(ValueType.DEATHS)),
         }
 
+    @property
+    def countries(self) -> List[str]:
+        return self.data[ValueType.INFECTIONS].time_series["country"].unique().tolist()
+
     def _get_data(self, type_: ValueType) -> Tuple[pd.DataFrame, pd.DataFrame]:
 
         if type_ == ValueType.INFECTIONS:
@@ -123,3 +127,17 @@ class DataAdaptor:
                                                index="days",
                                                values=type_.value)
         return tabulated_data
+
+    def get_time_delta_for_country(self,
+                                   type_: ValueType,
+                                   countries: Union[str, Iterable[str]],
+                                   index_since_: Optional[int] = 0,
+                                   rolling: int = 1) -> pd.DataFrame:
+        if isinstance(countries, str):
+            countries = [countries]
+
+        return (self._get_time_series_for_country_days(type_, countries, index_since_)
+                .fillna(0)
+                .diff()
+                .rolling(rolling)
+                .mean())
