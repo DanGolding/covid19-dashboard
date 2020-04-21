@@ -1,6 +1,6 @@
+import altair as alt
 import streamlit as st
-import matplotlib.pyplot as plt
-from covid19_dashboard.charting import plot_data_since, plot_delta_since, plot_data_since_altair
+from covid19_dashboard.charting import plot_data_since, plot_delta_since
 
 from covid19_dashboard.data_adaptor import DataAdaptor, ValueType
 
@@ -14,7 +14,7 @@ st.markdown(
         f"""
 <style>
     .reportview-container .main .block-container{{
-        max-width: 100%;
+        max-width: 80%;
     }}
 </style>
 """,
@@ -23,10 +23,26 @@ st.markdown(
 
 data_adaptor = get_data()
 
-# country_list = ["US", "Italy", "United Kingdom", "Spain", "Netherlands", "Israel", "Sweden"]
 country_list = data_adaptor.countries
 countries = st.multiselect(
     label='Countries', options=country_list, default=["US", "United Kingdom"])
 
-chart = plot_data_since_altair(data_adaptor, ValueType.INFECTIONS, countries, start=100)
-st.write(chart)
+start_infections = 100
+chart_infections_total = plot_data_since(
+    data_adaptor, ValueType.INFECTIONS, countries, start=start_infections)
+chart_infections_daily = plot_delta_since(
+    data_adaptor, ValueType.INFECTIONS, countries, start=start_infections, rolling=7)
+start_deaths = 20
+chart_deaths_total = plot_data_since(data_adaptor, ValueType.DEATHS, countries, start=start_deaths)
+chart_deaths_daily = plot_delta_since(
+    data_adaptor, ValueType.DEATHS, countries, start=start_deaths, rolling=7)
+
+h_space = 80
+v_space = 100
+composite_chart = alt.vconcat(
+    alt.hconcat(chart_infections_total, chart_infections_daily, spacing=h_space),
+    alt.hconcat(chart_deaths_total, chart_deaths_daily, spacing=h_space),
+    spacing=v_space,
+    padding={"left": 100, "top": 20}
+)
+st.altair_chart(composite_chart)
