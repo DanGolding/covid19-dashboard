@@ -2,69 +2,17 @@ from typing import Iterable, Optional
 
 import altair as alt
 import numpy as np
-from matplotlib.axes._subplots import Axes
 
 from covid19_dashboard.data_adaptor import DataAdaptor, ValueType
-
-
-# def plot_data_since(data_adaptor: DataAdaptor,
-#                     type_: ValueType,
-#                     countries: Iterable[str],
-#                     ax: Axes,
-#                     start: Optional[int] = None,
-#                     legend: bool = False) -> None:
-#
-#     data_country = data_adaptor.get_time_series_for_country(type_, countries, start)
-#
-#     time_data = data_country.index.days if start else data_country.index
-#     ax.plot(time_data, data_country[countries])
-#     if legend:
-#         ax.legend(countries)
-#     ax.set_yscale("log")
-#     if start:
-#         ax.set_xlim(-1.0, data_country.index.days.max())
-#     ax.set_ylim(start, data_country.max().max())
-#     ax.set_ylabel(type_.value)
-#     if start:
-#         ax.set_xlabel(f"Days since {start} {type_.value}")
-#     else:
-#         ax.set_xlabel("Date")
-
-
-def plot_delta_since_old(data_adaptor: DataAdaptor,
-                         type_: ValueType,
-                         countries: Iterable[str],
-                         ax: Axes,
-                         rolling: int = 1,
-                         start: Optional[int] = None,
-                         legend: bool = False) -> None:
-
-    data_country = data_adaptor.get_time_delta_for_country(type_, countries, start, rolling)
-    data_country[data_country <= 0] = np.NAN
-    if start:
-        data_country = data_country[data_country.index.days >= 0]
-
-    time_data = data_country.index.days if start else data_country.index
-    ax.plot(time_data, data_country[countries])
-    if legend:
-        ax.legend(countries)
-    ax.set_yscale("log")
-    ax.set_ylim(data_country.min().min(), data_country.max().max())
-    ylabel = f"{type_.value} per day"
-    if rolling > 1:
-        ylabel += f" ({rolling} day moving average)"
-    ax.set_ylabel(ylabel)
-    if start:
-        ax.set_xlabel(f"Days since {start} {type_.value}")
-    else:
-        ax.set_xlabel("Date")
 
 
 def plot_delta_since(data_adaptor: DataAdaptor,
                     type_: ValueType,
                     countries: Iterable[str],
                     start: Optional[int] = None,
-                    rolling: int = 1,) -> alt.Chart:
+                    rolling: int = 1,
+                    width: Optional[int] = None,
+                    height: Optional[int] = None) -> alt.Chart:
 
     source = (data_adaptor
               .get_time_delta_for_country(type_, countries, start, rolling)
@@ -86,7 +34,7 @@ def plot_delta_since(data_adaptor: DataAdaptor,
         color='country:N'
     )
 
-    chart = _plot_with_data_bar(source, line, type_)
+    chart = _plot_with_data_bar(source, line, type_, width, height)
 
     return chart
 
@@ -94,7 +42,9 @@ def plot_delta_since(data_adaptor: DataAdaptor,
 def plot_data_since(data_adaptor: DataAdaptor,
                     type_: ValueType,
                     countries: Iterable[str],
-                    start: Optional[int] = None) -> alt.Chart:
+                    start: Optional[int] = None,
+                    width: Optional[int] = None,
+                    height: Optional[int] = None) -> alt.Chart:
 
     source = (data_adaptor
               .get_time_series_for_country(type_, countries, start)
@@ -106,18 +56,23 @@ def plot_data_since(data_adaptor: DataAdaptor,
 
     line = alt.Chart(source).mark_line(interpolate='basis').encode(
         x=alt.X('days:Q', title=f"Days since {start} {type_.value}", axis=alt.Axis(grid=False)),
-        y=alt.Y(f'{type_.value}:Q', scale=alt.Scale(type="log"), title=f"{type_.value.title()}", axis=alt.Axis(grid=False, tickCount=5)),
+        y=alt.Y(f'{type_.value}:Q', scale=alt.Scale(type="log"), title=f"{type_.value.title()}", axis=alt.Axis(tickCount=5)),
         color='country:N'
     )
 
-    chart = _plot_with_data_bar(source, line, type_)
+    chart = _plot_with_data_bar(source, line, type_, width, height)
 
     return chart
 
 
 def _plot_with_data_bar(source: alt.Chart,
                         line: alt.Chart,
-                        type_: ValueType) -> alt.Chart:
+                        type_: ValueType,
+                        width: Optional[int] = None,
+                        height: Optional[int] = None) -> alt.Chart:
+
+    width = 800 if width is None else width
+    height = 400 if height is None else height
 
     # TODO: Add validation that the x and y series names are correct
 
@@ -155,7 +110,7 @@ def _plot_with_data_bar(source: alt.Chart,
     chart = alt.layer(
         line, selectors, points, rules, text
     ).properties(
-        width=800, height=300
+        width=width, height=height
     )
 
     return chart

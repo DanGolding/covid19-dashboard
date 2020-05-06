@@ -14,7 +14,7 @@ st.markdown(
         f"""
 <style>
     .reportview-container .main .block-container{{
-        max-width: 80%;
+        max-width: 100%;
     }}
 </style>
 """,
@@ -24,18 +24,25 @@ st.markdown(
 data_adaptor = get_data()
 
 country_list = data_adaptor.countries
-countries = st.multiselect(
+countries = st.sidebar.multiselect(
     label='Countries', options=country_list, default=["US", "United Kingdom"])
 
-start_infections = 100
+start_infections = st.sidebar.slider(
+    "Start charts since number of infections:", min_value=0, max_value=5_000, value=100, step=10)
+start_deaths = st.sidebar.slider(
+    "Start charts since number of deaths:", min_value=0, max_value=1_000, value=20, step=5)
+
+width = st.sidebar.number_input("Chart width", value=800)
+height = st.sidebar.number_input("Chart height", value=400)
+
+
 chart_infections_total = plot_data_since(
-    data_adaptor, ValueType.INFECTIONS, countries, start=start_infections)
+    data_adaptor, ValueType.INFECTIONS, countries, start=start_infections, width=width, height=height)
 chart_infections_daily = plot_delta_since(
-    data_adaptor, ValueType.INFECTIONS, countries, start=start_infections, rolling=7)
-start_deaths = 20
-chart_deaths_total = plot_data_since(data_adaptor, ValueType.DEATHS, countries, start=start_deaths)
+    data_adaptor, ValueType.INFECTIONS, countries, start=start_infections, rolling=7, width=width, height=height)
+chart_deaths_total = plot_data_since(data_adaptor, ValueType.DEATHS, countries, start=start_deaths, width=width, height=height)
 chart_deaths_daily = plot_delta_since(
-    data_adaptor, ValueType.DEATHS, countries, start=start_deaths, rolling=7)
+    data_adaptor, ValueType.DEATHS, countries, start=start_deaths, rolling=7, width=width, height=height)
 
 h_space = 80
 v_space = 100
@@ -46,3 +53,8 @@ composite_chart = alt.vconcat(
     padding={"left": 100, "top": 20}
 )
 st.altair_chart(composite_chart)
+
+# st.altair_chart(chart_infections_total)
+# st.altair_chart(chart_infections_daily)
+# st.altair_chart(chart_deaths_total)
+# st.altair_chart(chart_deaths_daily)
