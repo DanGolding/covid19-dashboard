@@ -6,7 +6,7 @@ The data are from the [COVID-19 Data Repository by the Center for Systems Scienc
 
 To run it, from the project root folder:
 
-1. Create and source virtual environment
+1. Create and source a virtual environment
 
 2. Install the package
    ```bash
