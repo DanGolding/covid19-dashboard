@@ -31,6 +31,9 @@ start_infections = st.sidebar.slider(
     "Start charts since number of infections:", min_value=0, max_value=5_000, value=100, step=10)
 start_deaths = st.sidebar.slider(
     "Start charts since number of deaths:", min_value=0, max_value=1_000, value=20, step=5)
+rolling = st.sidebar.slider(
+    "Rolling average window:", min_value=0, max_value=90, value=7, step=1)
+
 
 width = st.sidebar.number_input("Chart width", value=800)
 height = st.sidebar.number_input("Chart height", value=400)
@@ -39,13 +42,14 @@ height = st.sidebar.number_input("Chart height", value=400)
 chart_infections_total = plot_data_since(
     data_adaptor, ValueType.INFECTIONS, countries, start=start_infections, width=width, height=height)
 chart_infections_daily = plot_delta_since(
-    data_adaptor, ValueType.INFECTIONS, countries, start=start_infections, rolling=7, width=width, height=height)
-chart_deaths_total = plot_data_since(data_adaptor, ValueType.DEATHS, countries, start=start_deaths, width=width, height=height)
+    data_adaptor, ValueType.INFECTIONS, countries, start=start_infections, rolling=rolling, width=width, height=height)
+chart_deaths_total = plot_data_since(
+    data_adaptor, ValueType.DEATHS, countries, start=start_deaths, width=width, height=height)
 chart_deaths_daily = plot_delta_since(
-    data_adaptor, ValueType.DEATHS, countries, start=start_deaths, rolling=7, width=width, height=height)
+    data_adaptor, ValueType.DEATHS, countries, start=start_deaths, rolling=rolling, width=width, height=height)
 
 h_space = 80
-v_space = 100
+v_space = 80
 composite_chart = alt.vconcat(
     alt.hconcat(chart_infections_total, chart_infections_daily, spacing=h_space),
     alt.hconcat(chart_deaths_total, chart_deaths_daily, spacing=h_space),
@@ -53,8 +57,3 @@ composite_chart = alt.vconcat(
     padding={"left": 100, "top": 20}
 )
 st.altair_chart(composite_chart)
-
-# st.altair_chart(chart_infections_total)
-# st.altair_chart(chart_infections_daily)
-# st.altair_chart(chart_deaths_total)
-# st.altair_chart(chart_deaths_daily)

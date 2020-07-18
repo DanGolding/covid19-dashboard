@@ -30,7 +30,7 @@ def plot_delta_since(data_adaptor: DataAdaptor,
     line = alt.Chart(source).mark_line(interpolate='basis').encode(
         x=alt.X('days:Q', title=f"Days since {start} {type_.value}",  axis=alt.Axis(grid=False)),
         # TODO: calc the max tickcounts by finding the log_10 of the data max range
-        y=alt.Y(f'{type_.value}:Q', scale=alt.Scale(type="log"), title=ylabel, axis=alt.Axis(grid=False, tickCount=5)),
+        y=alt.Y(f'{type_.value}:Q', scale=alt.Scale(type="log"), title=ylabel, axis=alt.Axis(tickCount=5)),
         color='country:N'
     )
 

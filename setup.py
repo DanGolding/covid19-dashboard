@@ -3,6 +3,7 @@ from pathlib import Path
 from setuptools import setup, find_packages
 
 requirements = Path("requirements.txt").read_text().splitlines()
+dev_requirements = Path("dev_requirements.txt").read_text().splitlines()
 version = Path("src/covid19_dashboard/__version__.py").read_text().split(" ")[-1].strip('"')
 
 setup(
@@ -15,4 +16,5 @@ setup(
     python_requires=">=3.6.*",
     zip_safe=False,
     install_requires=requirements,
+    extra_requires={"dev": dev_requirements},
 )

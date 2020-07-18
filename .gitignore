@@ -126,3 +126,5 @@ requirements_constraints.txt
 
 requirements.lock
 *.tgz
+
+.DS_Store

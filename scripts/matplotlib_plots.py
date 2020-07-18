@@ -1,3 +1,5 @@
+"""Script to aid development of plots by recreating the altair plots in matplotlib"""
+
 from typing import Iterable, Optional
 
 import matplotlib.pyplot as plt
@@ -66,7 +68,8 @@ countries = ["US", "Italy", "United Kingdom", "Spain", "Netherlands", "Israel", 
 fig, ax = plt.subplots(1, 2)
 
 plot_data_since(data_adaptor, ValueType.DEATHS, countries, ax[0], start=100, legend=True)
-plot_delta_since(data_adaptor, ValueType.DEATHS, countries, ax[1], rolling=7, start=100, legend=True)
+plot_delta_since(
+    data_adaptor, ValueType.DEATHS, countries, ax[1], rolling=7, start=100, legend=True)
 
 plt.tight_layout()
 plt.show()
