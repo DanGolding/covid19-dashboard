@@ -4,9 +4,9 @@ This project is a place for me to experiment with streamlit and altair.
 
 The data are from the [COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)
 
-To run it, from the root folder 
+To run it, from the project root folder:
 
-1. Create and source virtual environment
+1. Create and source a virtual environment
 
 2. Install the package
    ```bash
