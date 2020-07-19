@@ -1,8 +1,5 @@
 FROM python:3.8-slim-buster
 
-RUN apt-get update
-RUN apt-get -y install build-essential
-
 RUN mkdir -p /root/.streamlit
 RUN bash -c 'echo -e "\
 [general]\n\
