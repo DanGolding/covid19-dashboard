@@ -15,9 +15,10 @@ enableCORS = false\n\
 port = $PORT\n\
 " > /root/.streamlit/config.toml'
 
-COPY /src ./src
-COPY requirements.txt ./requirement.txt
-COPY setup.py ./setup.py
-RUN pip3 install .
+RUN mkdir covid19
+COPY src covid19/src
+COPY requirements.txt covid19/requirement.txt
+COPY setup.py covid19/setup.py
+RUN pip3 install ./covid19
 
-CMD ["streamlit", "run", "src/covid19_dashboard/dashboard.py"]
+CMD ["streamlit", "run", "covid19/src/covid19_dashboard/dashboard.py"]
