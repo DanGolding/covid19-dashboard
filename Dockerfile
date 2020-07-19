@@ -18,6 +18,7 @@ port = $PORT\n\
 RUN mkdir covid19
 COPY src covid19/src
 COPY requirements.txt covid19/requirements.txt
+COPY dev_requirements.txt covid19/dev_requirements.txt
 COPY setup.py covid19/setup.py
 RUN pip3 install ./covid19
 
