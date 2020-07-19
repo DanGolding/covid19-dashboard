@@ -4,7 +4,11 @@ This project is a place for me to experiment with streamlit and altair.
 
 The data are from the [COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)
 
-To run it, from the project root folder:
+You can view the running dashboard at https://covid19-dashboard-dg.herokuapp.com/
+
+### Run locally
+
+from the project root folder:
 
 1. Create and source a virtual environment
 

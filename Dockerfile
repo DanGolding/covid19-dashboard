@@ -5,11 +5,9 @@ RUN bash -c 'echo -e "\
 [general]\n\
 email = \"\"\n\
 " > /root/.streamlit/credentials.toml'
-# The $PORT environment variable is used to be compatible with Heroku
 RUN bash -c 'echo -e "\
 [server]\n\
 enableCORS = false\n\
-port = $PORT\n\
 " > /root/.streamlit/config.toml'
 
 RUN mkdir covid19
@@ -19,4 +17,5 @@ COPY dev_requirements.txt covid19/dev_requirements.txt
 COPY setup.py covid19/setup.py
 RUN pip3 install ./covid19
 
-CMD ["streamlit", "run", "covid19/src/covid19_dashboard/dashboard.py"]
+# The $PORT environment variable is used to be compatible with Heroku
+CMD streamlit run covid19/src/covid19_dashboard/dashboard.py --server.port $PORT
